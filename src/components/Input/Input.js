@@ -9,6 +9,8 @@ function Input({ checkGuess }) {
       id="guess-input-form"
       onSubmit={(e) => {
         e.preventDefault();
+        if (guess.length !== 5)
+          return alert("Guess must be 5 characters long.");
         checkGuess(guess);
         setGuess("");
       }}
