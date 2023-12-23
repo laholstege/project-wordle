@@ -1,9 +1,10 @@
 import React from "react";
 
-import { sample } from "../../utils";
+import { range, sample } from "../../utils";
 import { WORDS } from "../../data";
 import Input from "../Input";
 import Guess from "../Guess";
+import { NUM_OF_GUESSES_ALLOWED } from "../../constants";
 
 // Pick a random word on every pageload.
 const answer = sample(WORDS);
@@ -28,6 +29,9 @@ function Game() {
       <div className="guess-results">
         {guesses.map(({ guess, id }) => {
           return <Guess guess={guess} key={id} />;
+        })}
+        {range(NUM_OF_GUESSES_ALLOWED - guesses.length).map((i) => {
+          return <Guess guess="" key={i}></Guess>;
         })}
       </div>
       <Input checkGuess={checkGuess} />
