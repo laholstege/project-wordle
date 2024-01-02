@@ -15,9 +15,16 @@ function Game() {
   const [guesses, setGuesses] = React.useState([]);
 
   const addGuess = (guess) => {
-    setGuesses([...guesses, checkGuess(guess, answer)]);
+    const checkedGuess = checkGuess(guess, answer);
+    setGuesses([...guesses, checkedGuess]);
   };
 
+  const success =
+    guesses.length > 0 &&
+    guesses.every((guess) =>
+      guess.every((letter) => letter.status === "correct")
+    );
+  const gameOver = guesses.length === NUM_OF_GUESSES_ALLOWED;
   return (
     <>
       <div className="guess-results">
@@ -25,7 +32,22 @@ function Game() {
           return <Guess guess={guesses[i]} key={i}></Guess>; // i BELIEVE this is fine because these should not move or be rerendered
         })}
       </div>
-      <Input checkGuess={addGuess} />
+      <Input checkGuess={addGuess} disabled={success || gameOver} />
+      {success && (
+        <div className="happy banner">
+          <p>
+            <strong>Congratulations!</strong> Got it in
+            <strong>{guesses.length} guesses</strong>.
+          </p>
+        </div>
+      )}
+      {gameOver && (
+        <div className="sad banner">
+          <p>
+            Sorry, the correct answer is <strong>{answer}</strong>.
+          </p>
+        </div>
+      )}
     </>
   );
 }

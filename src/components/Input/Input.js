@@ -1,6 +1,6 @@
 import React from "react";
 
-function Input({ checkGuess }) {
+function Input({ checkGuess, disabled }) {
   const [input, setInput] = React.useState("");
 
   return (
@@ -24,6 +24,7 @@ function Input({ checkGuess }) {
         maxLength={5}
         minLength={5}
         pattern="^[a-zA-Z]{5}$"
+        disabled={disabled}
       />
     </form>
   );
