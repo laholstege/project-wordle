@@ -7,23 +7,30 @@ import { NUM_OF_GUESSES_ALLOWED } from "../../constants";
 import { checkGuess } from "../../game-helpers";
 import Keyboard from "../Keyboard/Keyboard";
 
-// Pick a random word on every pageload.
-const answer = sample(WORDS);
-// To make debugging easier, we'll log the solution in the console.
-console.info({ answer });
-
 function Game() {
   const [guesses, setGuesses] = React.useState([]);
+  // Pick a random word on every pageload.
+  const [answer, setAnswer] = React.useState(() => sample(WORDS));
+  // To make debugging easier, we'll log the solution in the console.
+  console.info({ answer });
 
   const addGuess = (guess) => {
     const checkedGuess = checkGuess(guess, answer);
     setGuesses([...guesses, checkedGuess]);
   };
 
-  const success =
+  const resetGame = () => {
+    setGuesses([]);
+    setAnswer(sample(WORDS));
+  };
+
+  const banner =
     guesses.length > 0 &&
-    guesses[guesses.length - 1].every((guess) => guess.status === "correct");
-  const gameOver = guesses.length === NUM_OF_GUESSES_ALLOWED;
+    guesses[guesses.length - 1].every((guess) => guess.status === "correct")
+      ? "happy"
+      : guesses.length === NUM_OF_GUESSES_ALLOWED
+      ? "sad"
+      : "";
 
   return (
     <>
@@ -32,21 +39,21 @@ function Game() {
           return <Guess guess={guesses[i]} key={i}></Guess>; // i BELIEVE this is fine because these should not move or be rerendered
         })}
       </div>
-      <Input checkGuess={addGuess} disabled={success || gameOver} />
+      <Input checkGuess={addGuess} disabled={!!banner} />
       <Keyboard guesses={guesses} />
-      {success && (
-        <div className="happy banner">
-          <p>
-            <strong>Congratulations!</strong> Got it in{" "}
-            <strong>{guesses.length} guesses</strong>.
-          </p>
-        </div>
-      )}
-      {gameOver && (
-        <div className="sad banner">
-          <p>
-            Sorry, the correct answer is <strong>{answer}</strong>.
-          </p>
+      {!!banner && (
+        <div className={`banner ${banner}`}>
+          {banner === "happy" ? (
+            <p>
+              <strong>Congratulations!</strong> Got it in{" "}
+              <strong>{guesses.length} guesses</strong>.
+            </p>
+          ) : (
+            <p>
+              Sorry, the correct answer is <strong>{answer}</strong>.
+            </p>
+          )}
+          <button onClick={resetGame}>Play again</button>
         </div>
       )}
     </>
