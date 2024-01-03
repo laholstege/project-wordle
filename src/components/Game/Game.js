@@ -21,10 +21,9 @@ function Game() {
 
   const success =
     guesses.length > 0 &&
-    guesses.every((guess) =>
-      guess.every((letter) => letter.status === "correct")
-    );
+    guesses[guesses.length - 1].every((guess) => guess.status === "correct");
   const gameOver = guesses.length === NUM_OF_GUESSES_ALLOWED;
+
   return (
     <>
       <div className="guess-results">
