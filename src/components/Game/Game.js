@@ -37,7 +37,7 @@ function Game() {
       {success && (
         <div className="happy banner">
           <p>
-            <strong>Congratulations!</strong> Got it in
+            <strong>Congratulations!</strong> Got it in{" "}
             <strong>{guesses.length} guesses</strong>.
           </p>
         </div>
