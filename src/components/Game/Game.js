@@ -6,6 +6,8 @@ import Guess from "../Guess";
 import { NUM_OF_GUESSES_ALLOWED } from "../../constants";
 import { checkGuess } from "../../game-helpers";
 import Keyboard from "../Keyboard/Keyboard";
+import Banner from "../Banner/Banner";
+import GameStats from "../GameStats/GameStats";
 
 function Game() {
   const [guesses, setGuesses] = React.useState([]);
@@ -55,43 +57,37 @@ function Game() {
     <>
       <div className="guess-results">
         {range(NUM_OF_GUESSES_ALLOWED).map((i) => {
-          console.log(guesses[i]);
           return <Guess guess={guesses[i]} key={i}></Guess>; // i BELIEVE this is fine because these should not move or be rerendered
         })}
       </div>
       <Input checkGuess={addGuess} disabled={!!banner} />
       <Keyboard guesses={guesses} />
       {!!banner && (
-        <div className={`banner ${banner}`}>
+        <Banner status={banner}>
           {banner === "happy" ? (
             <p>
               <strong>Congratulations!</strong> Got it in{" "}
-              <strong>{guesses.length} guesses</strong>.
+              <strong>
+                {guesses.length > 1 ? `${guesses.length} guesses` : "1 guess"}
+              </strong>
+              .
             </p>
           ) : (
             <p>
               Sorry, the correct answer is <strong>{answer}</strong>.
             </p>
           )}
-          <p>
-            <strong>Game history</strong>
-          </p>
-          <p>
-            You have won{" "}
-            {((correctGames.length / gameHistory.length) * 100).toFixed(0)}% of{" "}
-            {gameHistory.length} games
-            {correctGames.length > 0 &&
-              ` with an average correct answer in 
-              ${
-                correctGames.reduce(
-                  (acc, history) => (acc += history.numGuesses),
-                  0
-                ) / correctGames.length
-              }
-              guesses`}
-          </p>
+          <br />
+          <GameStats
+            numCorrectGames={correctGames.length}
+            numTotalGames={gameHistory.length}
+            numTotalGuesses={correctGames.reduce(
+              (acc, history) => (acc += history.numGuesses),
+              0
+            )}
+          />
           <button onClick={resetGame}>Play again</button>
-        </div>
+        </Banner>
       )}
     </>
   );
